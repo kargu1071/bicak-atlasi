@@ -1,0 +1,10 @@
+name: bicak-atlasi
+static_sites:
+  - name: atlas
+    git:
+      repo_clone_url: https://github.com/kargu1071/bicak-atlasi.git
+      branch: hosting-setup
+    environment_slug: html
+    build_command: mkdir -p dist && cp index.html dist/
+    output_dir: dist
+    index_document: index.html
