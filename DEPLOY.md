@@ -17,3 +17,7 @@ Hesabında App Platform erişimiyle bu daldaki `.do/app.yaml` dosyasını kullan
 ## Codeberg Pages
 
 Codeberg’de herkese açık bir `bicak-atlasi` deposu oluştur ve `pages` dalını hazırla. Depo ayarlarında git-pages webhook’u ekle ve dal filtresini `pages` olarak seç. Bu deponun `index.html` dosyasını o dala yükle. Webhook ekranının gösterdiği proje URL’sinden yayını doğrula.
+
+## Netlify
+
+Mevcut Netlify projesinde üretim deposunu ve dalını kontrol et. Bu statik sürümü yayınlamak için kaynak olarak `kargu1071/bicak-atlasi` deposunun `hosting-setup` dalını seç. Netlify, `netlify.toml` üzerinden yalnızca `index.html` dosyasını içeren `dist/` dizinini yayınlar. İlk dağıtım tamamlandığında proje panelindeki üretim bağlantısını açıp arama ve karşılaştırmayı kontrol et.
