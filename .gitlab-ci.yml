@@ -1,0 +1,10 @@
+publish-atlas:
+  image: alpine:3
+  stage: deploy
+  script:
+    - mkdir -p public/turkce-bicak-kaynaklari
+    - cp index.html public/index.html
+    - cp turkce-bicak-kaynaklari/index.html public/turkce-bicak-kaynaklari/index.html
+  pages: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
