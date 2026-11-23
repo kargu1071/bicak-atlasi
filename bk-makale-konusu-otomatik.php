@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Makale Konusu Otomatik Kartlar
  * Description: Yalnızca konuya uygun yeni yazıları Makaleler alt merkezlerinde listeler. Model incelemelerini sırf kamp/tarih kelimesi geçtiği için bu merkezlere eklemez. URL'leri değiştirmez.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -23,7 +23,7 @@ add_action('init', 'bk_makale_konusu_register_categories', 110);
  */
 function bk_makale_konusu_from_title($title) {
     $title = wp_strip_all_tags(html_entity_decode((string) $title, ENT_QUOTES, 'UTF-8'));
-    $model_review = (bool) preg_match('/inceleme(?:si|leri)?|karşılaştırma(?:sı)?|\bvs\b/iu', $title);
+    $model_review = (bool) preg_match('/[İIıi]nceleme(?:si|leri)?|karşılaştırma(?:sı)?|\\bvs\\b/iu', $title);
 
     // An explicitly fishing-oriented knife or fileto knife is relevant even if reviewed.
     if (preg_match('/balıkçılık|balıkçı|balık tut|olta|fileto\s+(?:bıçağı|çakısı|bıçak|çakı)|(?:balık|fileto)\s+ekipman/iu', $title)) {
