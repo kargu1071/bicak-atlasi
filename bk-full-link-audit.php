@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BıçakKurdu - Geçici Tam İçerik Bağlantı Denetimi
- * Version: 1.0.0
+ * Version: 1.0.1
  * Description: One-time read-only audit of ALL published pages, CPTs, taxonomies and editorial hyperlinks. Stores a private draft report and makes no public changes.
  */
 defined('ABSPATH') || exit;
@@ -60,7 +60,12 @@ register_activation_hook(__FILE__, function() {
             'url'=>$canonical,'slug'=>$post->post_name,'date'=>$post->post_date,
             'words'=>bk_audit_visible_words($raw),'content_bytes'=>strlen($raw),
             'desc_length'=>mb_strlen((string)$description),
+            'desc_hash'=>md5((string)$description),
+            'desc_excerpt'=>mb_substr((string)$description,0,195),
+            'modified'=>$post->post_modified,
+            'author_id'=>$post->post_author,
             'seo_title_length'=>mb_strlen((string)$seo_title),
+            'seo_title'=>mb_substr((string)$seo_title,0,155),
             'has_featured_image'=>has_post_thumbnail($post->ID),
             'headings'=>$headings,'links'=>$links,
         );
