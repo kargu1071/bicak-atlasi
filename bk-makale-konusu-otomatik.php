@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Makale Konusu Otomatik Kartlar
  * Description: Yalnızca konuya uygun yeni yazıları Makaleler alt merkezlerinde listeler. Model incelemelerini sırf kamp/tarih kelimesi geçtiği için bu merkezlere eklemez. URL'leri değiştirmez.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -87,24 +87,6 @@ add_action('save_post', function($post_id, $post) {
         return;
     }
     bk_makale_konusu_assign($post_id, $post);
-}, 30, 2);
-
-/** The six specific Gutenberg query loops should search article + guide post types. */
-add_filter('query_loop_block_query_vars', function($query, $block) {
-    $query_id = (int) ($block->attributes['queryId'] ?? 0);
-    $approved = array(
-        292902 => 2929, // Kamp
-        292802 => 2928, // Tarih
-        292701 => 2927, // Maceralar
-        293001 => 2930, // Balıkçılık
-        290501 => 2905, // Nasıl Yapılır
-        45001  => 450,  // Bileme
-    );
-    if (isset($approved[$query_id]) && is_page($approved[$query_id])) {
-        $query['post_type'] = array('post', 'inceleme', 'rehber');
-        $query['ignore_sticky_posts'] = true;
-    }
-    return $query;
 }, 30, 2);
 
 /** One-time precise filing for existing title-matched articles, not unrelated reviews. */
