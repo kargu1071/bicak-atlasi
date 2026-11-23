@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.2.0
+ * Version: 2.3.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -80,6 +80,11 @@ add_action('template_redirect', function() {
     }
     $path = '/' . trim(rawurldecode($path), '/');
     $destination = bk_consolidated_exact_map_20261123()[$path] ?? null;
+    // Old WordPress category pagination should resolve to the final clean hub.
+    if (!is_string($destination) && strpos($path, '/category/') === 0 &&
+        preg_match('#^(.*)/page/[1-9][0-9]*$#', $path, $page_match)) {
+        $destination = bk_consolidated_exact_map_20261123()[$page_match[1]] ?? null;
+    }
     if (!is_string($destination)) {
         return;
     }
