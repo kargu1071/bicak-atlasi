@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.4.0
+ * Version: 2.5.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -12,6 +12,8 @@ defined('ABSPATH') || exit;
 /** Canonical map: only exact incoming paths, never a broad prefix catch-all. */
 function bk_consolidated_exact_map_20261123() {
     return array(
+        '/2026/10/24/kershaw-livewire-tanto-incelemesi' => '/bicak-incelemeleri/kershaw-livewire-tanto-incelemesi/',
+        '/2026/10/23/crkt-5500-kiss-tasarim-incelemesi' => '/bicak-incelemeleri/crkt-5500-kiss-tasarim-incelemesi/',
         '/2026/10/23/bicak-kilifi-rehberi' => '/bicak-kilifi-rehberi/',
         '/2026/10/23/bicak-paslanmasi-korozyon-rehberi' => '/bicak-paslanmasi-korozyon-rehberi/',
         '/2026/10/23/bicak-olculeri-nasil-okunur' => '/bicak-olculeri-nasil-okunur/',
