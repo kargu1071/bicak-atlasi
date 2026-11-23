@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BK Temporary Theme and SEO Audit
- * Version: 1.0.2
+ * Version: 1.0.3
  * Description: One-time administrator audit. Writes read-only findings to a private draft.
  */
 defined('ABSPATH') || exit;
@@ -40,6 +40,21 @@ register_activation_hook(__FILE__, function() {
 
     $r['menu_js'] = is_readable($theme.'/assets/js/main.js') ? file_get_contents($theme.'/assets/js/main.js') : '';
     $r['icons_php'] = is_readable($theme.'/inc/icons.php') ? file_get_contents($theme.'/inc/icons.php') : '';
+
+    $r['jetpack_rebuild_report'] = get_option('bk_jetpack_sitemap_fix_report_20261123', array());
+    $r['timezone'] = wp_timezone_string();
+    $r['rss_language'] = get_option('rss_language');
+    $live = wp_remote_get(home_url('/'),array('timeout'=>8,'limit_response_size'=>180000,'sslverify'=>false));
+    if (is_wp_error($live)) {
+        $r['live_navigation'] = array('error'=>$live->get_error_message());
+    } else {
+        $live_body = wp_remote_retrieve_body($live);
+        if (preg_match('~<nav class="bkp-navigation"[^>]*>([\s\S]*?)</nav>~iu', $live_body, $matched)) {
+            $r['live_navigation'] = array('http'=>wp_remote_retrieve_response_code($live),'markup'=>substr($matched[0],0,18000));
+        } else {
+            $r['live_navigation'] = array('http'=>wp_remote_retrieve_response_code($live),'error'=>'nav not found');
+        }
+    }
     $r['css_files'] = array();
     $r['css_menu_rules'] = array();
     $scan = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($theme, FilesystemIterator::SKIP_DOTS));
@@ -52,7 +67,7 @@ register_activation_hook(__FILE__, function() {
         preg_match_all('/.{0,120}(?:bkp-menu|bkp-navigation|sub-menu|menu-item-has-children).{0,260}/iu',$styles,$s);
         if ($s[0]) $r['css_menu_rules'][$relative]=array_slice($s[0],0,38);
     }
-    foreach (array('/sitemap-1.xml','/image-sitemap-1.xml','/wp-sitemap-posts-page-1.xml') as $endpoint) {
+    foreach (array('/sitemap-1.xml','/sitemap-2.xml','/sitemap-3.xml','/image-sitemap-1.xml','/wp-sitemap-posts-page-1.xml') as $endpoint) {
         $response = wp_remote_get(home_url($endpoint),array('timeout'=>7,'redirection'=>3,'limit_response_size'=>240000,'sslverify'=>false));
         if (is_wp_error($response)) {
             $r['sitemap_details'][$endpoint] = array('error'=>$response->get_error_message());
