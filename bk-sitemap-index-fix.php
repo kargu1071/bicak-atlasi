@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Sitemap ve İndeksleme Düzeltmesi
  * Description: Jetpack XML sitemap'e yayınlanan inceleme, çelik ve rehber içeriklerini dahil eder. Robots.txt'de gereksiz Google News sitemap bildirimini kaldırır.
- * Version: 1.0.2
+ * Version: 1.1.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -18,6 +18,42 @@ function bk_sitemap_include_editorial_post_types($post_types) {
     return array_values(array_unique($post_types));
 }
 add_filter('jetpack_sitemap_post_types','bk_sitemap_include_editorial_post_types',99,1);
+
+/** Include only real, non-redirecting category hubs in Jetpack's existing page sitemap. */
+add_filter('jetpack_page_sitemap_other_urls', function($urls) {
+    if (!is_array($urls)) $urls=array();
+    $seen=array();
+    foreach($urls as $item) {
+        if (isset($item['loc'])) $seen[untrailingslashit((string)$item['loc'])]=true;
+    }
+    $taxonomies=array('bicak_kategori','bk_celik_grubu');
+    foreach($taxonomies as $tax) {
+        if (!taxonomy_exists($tax)) continue;
+        $terms=get_terms(array('taxonomy'=>$tax,'hide_empty'=>true));
+        if (is_wp_error($terms) || !is_array($terms)) continue;
+        foreach($terms as $term) {
+            if ($tax==='bicak_kategori' && $term->slug==='geleneksel-bicaklar') continue; // 301 to real /geleneksel-bicaklar/ page.
+            $url=get_term_link($term);
+            if (is_wp_error($url) || !is_string($url) || !str_starts_with($url,home_url('/'))) continue;
+            $key=untrailingslashit($url);
+            if(isset($seen[$key])) continue;
+            $entry=array('loc'=>$url);
+            $last=get_posts(array('post_type'=>'any','post_status'=>'publish','numberposts'=>1,'orderby'=>'modified','order'=>'DESC','tax_query'=>array(array('taxonomy'=>$tax,'field'=>'term_id','terms'=>array($term->term_id))),'fields'=>'ids','suppress_filters'=>true));
+            if($last){
+                $modified=get_post_modified_time('Y-m-d\TH:i:s\Z',true,(int)$last[0]);
+                if(is_string($modified) && $modified) $entry['lastmod']=$modified;
+            }
+            $urls[]=$entry;
+            $seen[$key]=true;
+        }
+    }
+    $author=home_url('/yazar/');
+    if(!isset($seen[untrailingslashit($author)])) {
+        $urls[]=array('loc'=>$author);
+    }
+    return $urls;
+}, 90);
+
 /** Avoid advertising a Google News feed for this reference-style publication. */
 add_filter('jetpack_news_sitemap_include_in_robotstxt', '__return_false', 100);
 
