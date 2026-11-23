@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.6.0
+ * Version: 2.7.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -12,6 +12,7 @@ defined('ABSPATH') || exit;
 /** Canonical map: only exact incoming paths, never a broad prefix catch-all. */
 function bk_consolidated_exact_map_20261123() {
     return array(
+        '/markalar/vosteed-2' => '/markalar/vosteed/',
         '/2026/10/24/kershaw-livewire-tanto-incelemesi' => '/bicak-incelemeleri/kershaw-livewire-tanto-incelemesi/',
         '/2026/10/23/crkt-5500-kiss-tasarim-incelemesi' => '/bicak-incelemeleri/crkt-5500-kiss-tasarim-incelemesi/',
         '/2026/10/23/bicak-kilifi-rehberi' => '/bicak-kilifi-rehberi/',
@@ -190,7 +191,7 @@ add_action('template_redirect', function() {
         '/2026/10/24/ilk-kamp-bicaginda-7-secim-kriteri/' => '/bicaklar/',
         '/2026/10/24/ilk-kamp-bicagini-secerken-yapilan-5-yaygin-hata/' => '/kamp-bicagi-secim-rehberi/',
         '/2026/10/28/case-bicak-rehberi/' => '/markalar/',
-        '/2026/10/28/glock-bicak-rehberi/' => '/markalar/',
+        '/2026/10/28/glock-bicak-rehberi/' => '/glock-bicak-rehberi/',
         '/2026/10/28/kai-bicak-rehberi/' => '/markalar/',
         '/2026/10/28/marttiini-bicak-rehberi/' => '/markalar/',
         '/2026/10/28/united-cutlery-bicak-rehberi/' => '/markalar/',
