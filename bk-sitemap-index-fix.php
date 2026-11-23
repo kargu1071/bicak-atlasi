@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Sitemap ve İndeksleme Düzeltmesi
  * Description: Jetpack XML sitemap'e yayınlanan inceleme, çelik ve rehber içeriklerini dahil eder. Robots.txt'de gereksiz Google News sitemap bildirimini kaldırır.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -33,6 +33,10 @@ register_activation_hook(__FILE__, function() {
     $report = array('date'=>gmdate('c'));
     $types = array('post','page');
     $report['included_types'] = bk_sitemap_include_editorial_post_types($types);
+    // Jetpack persists the post-type list in this option. Refresh it before regeneration.
+    $report['previous_cached_types'] = get_option('jetpack_sitemap_post_types', array());
+    update_option('jetpack_sitemap_post_types', $report['included_types'], false);
+    $report['stored_types'] = get_option('jetpack_sitemap_post_types', array());
     if (class_exists('Jetpack_Sitemap_Builder') && class_exists('Jetpack_Sitemap_Librarian')) {
         try {
             $librarian = new Jetpack_Sitemap_Librarian();
