@@ -2,21 +2,21 @@
 /**
  * Plugin Name: BıçakKurdu - Üst Menü Makaleler
  * Description: Mevcut tema üst menüsünde Bileme bağlantısını Makaleler ve alt kategorileriyle değiştirir. URL yönlendirmelerine dokunmaz.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
 
 function bk_makaleler_nav_items() {
     return array(
-        array('Bıçak ve Çakı Makaleleri', '/category/makaleler/bicak-ve-caki-makaleleri/', 0),
-        array('Havalı Tüfek ve BB Tabanca', '/category/makaleler/havali-tufek-ve-bb-tabanca/', 0),
-        array('Nasıl Yapılır', '/category/makaleler/nasil-yapilir/', 0),
-        array('Bileme', '/category/makaleler/nasil-yapilir/bileme/', 1),
-        array('Maceralar', '/category/makaleler/maceralar/', 0),
-        array('Tarih ve Hikayeler', '/category/makaleler/tarih-ve-hikayeler/', 0),
-        array('Kamp', '/category/makaleler/kamp/', 0),
-        array('Balıkçılık', '/category/makaleler/balikcilik/', 0),
+        array('Bıçak ve Çakı Makaleleri', '/bicak-incelemeleri/', 0),
+        array('Havalı Tüfek ve BB Tabanca', '/havali-tufek-ve-bb-tabanca/', 0),
+        array('Nasıl Yapılır', '/nasil-yapilir/', 0),
+        array('Bileme', '/bileme/', 1),
+        array('Maceralar', '/maceralar/', 0),
+        array('Tarih ve Hikayeler', '/tarih-ve-hikayeler/', 0),
+        array('Kamp', '/kamp/', 0),
+        array('Balıkçılık', '/balikcilik/', 0),
     );
 }
 
