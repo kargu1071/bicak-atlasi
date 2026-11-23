@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -12,6 +12,17 @@ defined('ABSPATH') || exit;
 /** Canonical map: only exact incoming paths, never a broad prefix catch-all. */
 function bk_consolidated_exact_map_20261123() {
     return array(
+        '/2026/10/23/bicak-kilifi-rehberi' => '/bicak-kilifi-rehberi/',
+        '/2026/10/23/bicak-paslanmasi-korozyon-rehberi' => '/bicak-paslanmasi-korozyon-rehberi/',
+        '/2026/10/23/bicak-olculeri-nasil-okunur' => '/bicak-olculeri-nasil-okunur/',
+        '/2026/10/24/av-bicagi-secim-rehberi' => '/av-bicagi-secim-rehberi/',
+        '/2026/10/24/sabit-bicak-secim-rehberi' => '/sabit-bicak-secim-rehberi/',
+        '/2026/10/23/g10-kabze-nedir' => '/bicak-kabze-malzemeleri/',
+        '/2026/10/23/ahsap-kabze-nedir' => '/bicak-kabze-malzemeleri/',
+        '/2026/10/23/aluminyum-kabze-nedir' => '/bicak-kabze-malzemeleri/',
+        '/2026/10/23/karbon-fiber-kabze-nedir' => '/bicak-kabze-malzemeleri/',
+        '/2026/10/23/frn-kabze-nedir' => '/bicak-kabze-malzemeleri/',
+        '/2026/10/23/paslanmaz-celik-kabze-nedir' => '/bicak-kabze-malzemeleri/',
         '/category/bicak-celikleri' => '/bicak-celikleri/',
         '/kategori/geleneksel-bicaklar' => '/geleneksel-bicaklar/',
         '/rehber-konulari/bakim-ve-bileme' => '/bileme/',
