@@ -1,12 +1,21 @@
 <?php
 /** Plugin Name: BK Temporary Sitemap Verify
- * Version: 1.0.0
+ * Version: 1.0.1
  * Description: One-time private audit of Jetpack XML sitemap content.
  */
 defined('ABSPATH') || exit;
 register_activation_hook(__FILE__,function(){
  $paths=array('/sitemap.xml','/sitemap-1.xml','/robots.txt');
  $out=array('timestamp'=>gmdate('c'),'reports'=>array());
+ $out['jetpack_previous_report']=get_option('bk_jetpack_sitemap_fix_report_20261123',array());
+ $out['cron_before']=array('hook_exists'=>has_action('jp_sitemap_cron_hook'),'next'=>wp_next_scheduled('jp_sitemap_cron_hook'));
+ $out['filter_active']=has_filter('jetpack_page_sitemap_other_urls');
+ if(has_action('jp_sitemap_cron_hook')) {
+    try { do_action('jp_sitemap_cron_hook'); $out['cron_invocation']='completed'; }
+    catch(Throwable $e){$out['cron_invocation']='failed';$out['cron_error']=mb_substr($e->getMessage(),0,450);}
+ } else $out['cron_invocation']='missing_hook';
+ $out['cron_after']=array('next'=>wp_next_scheduled('jp_sitemap_cron_hook'));
+
  foreach($paths as $path){
   $r=wp_remote_get(home_url($path),array('timeout'=>12,'redirection'=>2,'limit_response_size'=>400000,'sslverify'=>true,'headers'=>array('Cache-Control'=>'no-cache')));
   if(is_wp_error($r)){$out['reports'][$path]=array('error'=>$r->get_error_message());continue;}
