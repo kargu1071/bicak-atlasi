@@ -2,14 +2,14 @@
 /**
  * Plugin Name: BıçakKurdu - Üst Menü Makaleler
  * Description: Mevcut tema üst menüsünde Bileme bağlantısını Makaleler ve alt kategorileriyle değiştirir. URL yönlendirmelerine dokunmaz.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
 
 function bk_makaleler_nav_items() {
     return array(
-        array('Bıçak ve Çakı Makaleleri', '/bicak-incelemeleri/', 0),
+        array('Bıçak ve Çakı Makaleleri', '/incelemeler/', 0),
         array('Havalı Tüfek ve BB Tabanca', '/havali-tufek-ve-bb-tabanca/', 0),
         array('Nasıl Yapılır', '/nasil-yapilir/', 0),
         array('Bileme', '/bileme/', 0),
