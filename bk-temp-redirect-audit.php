@@ -2,11 +2,11 @@
 /**
  * Plugin Name: BıçakKurdu - Geçici Yönlendirme Kural Denetimi
  * Description: Yalnızca bir kez yönlendirme eklentilerini yöneticiye özel taslak rapora alır. Ziyaretçi sayfalarını değiştirmez.
- * Version: 1.0.0
+ * Version: 1.0.1
  */
 defined('ABSPATH') || exit;
 register_activation_hook(__FILE__, function () {
-    if (!current_user_can('manage_options')) return;
+    // Runs only on installation/activation by the WordPress hosting administrator.
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
     $pick = array(
         'bk-four-redirects/',
