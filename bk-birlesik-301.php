@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -616,3 +616,22 @@ add_action( 'template_redirect', function () {
     if ( wp_safe_redirect( $file_url, 301, 'Bicak Kurdu Image Attachment' ) ) { exit; }
 }, -90 );
 
+
+/* BK-uncategorized-410: Do not expose the empty built-in default category as an indexable page. */
+add_action('template_redirect', function() {
+    if (is_admin() || wp_doing_ajax()) return;
+    $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+    if ($method !== 'GET' && $method !== 'HEAD') return;
+    $path = wp_parse_url(wp_unslash($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+    if (!is_string($path) || '/' . trim($path, '/') !== '/category/uncategorized') return;
+    status_header(410);
+    nocache_headers();
+    header('X-Robots-Tag: noindex, follow', true);
+    $tpl = get_404_template();
+    if ($tpl && is_readable($tpl)) {
+        include $tpl;
+    } else {
+        echo '<h1>Bu kategori kaldırıldı</h1><p>İçerik kategorileri için <a href="' . esc_url(home_url('/makaleler/')) . '">Makaleler</a> sayfasını ziyaret edin.</p>';
+    }
+    exit;
+}, -9999);
