@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Makale Konusu Otomatik Kartlar
  * Description: Yalnızca konuya uygun yeni yazıları Makaleler alt merkezlerinde listeler. Model incelemelerini sırf kamp/tarih kelimesi geçtiği için bu merkezlere eklemez. URL'leri değiştirmez.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -104,4 +104,85 @@ register_activation_hook(__FILE__, function() {
             bk_makale_konusu_assign((int) $id);
         }
     }
+});
+
+
+/**
+ * Unified, date-sorted article cards on the Bileme landing page.
+ * Include only articles explicitly classified as category 57 (Bileme).
+ */
+add_shortcode('bk_bileme_makaleleri', function () {
+    if (!is_page(450)) {
+        return '';
+    }
+
+    $page = isset($_GET['bk_bileme_sayfa'])
+        ? max(1, absint(wp_unslash($_GET['bk_bileme_sayfa'])))
+        : 1;
+
+    $articles = new WP_Query(array(
+        'post_type' => array('post', 'inceleme', 'rehber'),
+        'post_status' => 'publish',
+        'cat' => 57,
+        'posts_per_page' => 12,
+        'paged' => $page,
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'ignore_sticky_posts' => true,
+    ));
+
+    ob_start();
+    if ($articles->have_posts()) {
+        echo '<div class="bk-bileme-article-grid">';
+        while ($articles->have_posts()) {
+            $articles->the_post();
+            $title = get_the_title();
+            $link = get_permalink();
+            $excerpt = wp_trim_words(wp_strip_all_tags(get_the_excerpt()), 20, '…');
+            echo '<article class="bk-bileme-article-card">';
+            echo '<a class="bk-bileme-article-image" href="' . esc_url($link) . '" aria-label="' . esc_attr($title) . '">';
+            if (has_post_thumbnail()) {
+                echo get_the_post_thumbnail(get_the_ID(), 'medium_large', array(
+                    'alt' => $title,
+                    'loading' => 'lazy',
+                    'decoding' => 'async',
+                ));
+            } else {
+                echo '<span class="bk-bileme-article-placeholder" aria-hidden="true">BİLEME REHBERİ</span>';
+            }
+            echo '</a>';
+            echo '<div class="bk-bileme-article-copy">';
+            echo '<h3><a href="' . esc_url($link) . '">' . esc_html($title) . '</a></h3>';
+            if ($excerpt !== '') {
+                echo '<p>' . esc_html($excerpt) . '</p>';
+            }
+            echo '<a class="bk-bileme-article-read" href="' . esc_url($link) . '">Makaleyi oku <span aria-hidden="true">→</span></a>';
+            echo '</div></article>';
+        }
+        echo '</div>';
+
+        if ($articles->max_num_pages > 1) {
+            $base = add_query_arg(
+                'bk_bileme_sayfa',
+                '%#%',
+                get_permalink(450)
+            );
+            $links = paginate_links(array(
+                'base' => $base,
+                'format' => '',
+                'current' => $page,
+                'total' => (int) $articles->max_num_pages,
+                'prev_text' => '‹ Önceki',
+                'next_text' => 'Sonraki ›',
+                'type' => 'list',
+            ));
+            if ($links) {
+                echo '<nav class="bk-bileme-article-pages" aria-label="Bileme makalesi sayfaları">' . wp_kses_post($links) . '</nav>';
+            }
+        }
+    } else {
+        echo '<p class="bk-bileme-empty">Henüz bu kategoride yayımlanmış makale yok. Bileme kategorisine yeni bir yazı eklediğinizde burada otomatik olarak kart şeklinde görünecek.</p>';
+    }
+    wp_reset_postdata();
+    return ob_get_clean();
 });
