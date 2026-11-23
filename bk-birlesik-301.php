@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.3.0
+ * Version: 2.4.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -640,3 +640,38 @@ add_action('template_redirect', function() {
     }
     exit;
 }, -9999);
+
+/* BK-retired-model-410: Old single-model reviews with no corresponding published article.
+ * Do not falsely send searches for these models to unrelated brand or general landing pages.
+ * Restore a 301 when the matching genuine article is published. */
+add_action('template_redirect', function() {
+    if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+    $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+    if ($method !== 'GET' && $method !== 'HEAD') return;
+    $incoming = wp_parse_url(wp_unslash($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+    if (!is_string($incoming)) return;
+    $path = '/' . trim(rawurldecode($incoming), '/');
+    $retired = array(
+        '/edc-titan-nester-cep-cakisi-incelemesi' => true,
+        '/2026/10/23/columbia-skeleton-tactical-bicak-incelemesi' => true,
+        '/2026/10/24/ontario-rat-ii-incelemesi' => true,
+        '/2026/10/24/crkt-counterpart-crossbar-incelemesi' => true,
+        '/2026/10/24/crkt-counterpart-vs-benchmade-bugout-vs-kershaw-iridium' => true,
+        '/2026/10/24/kershaw-leek-1660-incelemesi' => true,
+        '/2026/10/23/spyderco-shaman-vs-para-military-2' => true,
+        '/2026/10/26/tsukishiro-damascus-kiritsuke-sef-bicagi-incelemesi' => true,
+        '/2026/10/24/kershaw-leek-1660-incelemesi/comment-page-1' => true,
+        '/2026/10/23/spyderco-shaman-vs-para-military-2/comment-page-1' => true,
+    );
+    if (!isset($retired[$path])) return;
+    status_header(410);
+    nocache_headers();
+    header('X-Robots-Tag: noindex, follow', true);
+    $template = get_404_template();
+    if ($template && is_readable($template)) {
+        include $template;
+    } else {
+        echo '<h1>İçerik kaldırıldı</h1><p>Yayımlanmış içerikler için <a href="' . esc_url(home_url('/incelemeler/')) . '">İncelemeler</a> sayfasını açın.</p>';
+    }
+    exit;
+}, -10000);
