@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Birleşik 301 ve Arşiv Yönetimi
  * Description: Eski Makaleler kategori yolları, tarihli 404 yazılar, eski taksonomi alt yolları, yazar, rehber ve ek arşiv kurallarını tek noktadan yönetir. Canlı /kategori/ ana arşivleri korunur.
- * Version: 2.5.0
+ * Version: 2.6.0
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -666,7 +666,9 @@ add_action('template_redirect', function() {
         '/2026/10/23/spyderco-shaman-vs-para-military-2/comment-page-1' => true,
     );
     if (!isset($retired[$path])) return;
-    status_header(410);
+    // User-requested exception: keep Titan Nester as 404 until its review is reconsidered.
+    $retired_status = $path === '/edc-titan-nester-cep-cakisi-incelemesi' ? 404 : 410;
+    status_header($retired_status);
     nocache_headers();
     header('X-Robots-Tag: noindex, follow', true);
     $template = get_404_template();
