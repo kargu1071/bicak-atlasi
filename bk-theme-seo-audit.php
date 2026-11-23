@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BK Temporary Theme and SEO Audit
- * Version: 1.0.1
+ * Version: 1.0.2
  * Description: One-time administrator audit. Writes read-only findings to a private draft.
  */
 defined('ABSPATH') || exit;
@@ -38,6 +38,8 @@ register_activation_hook(__FILE__, function() {
                 'body_start'=>substr(wp_remote_retrieve_body($response),0,17000));
     }
 
+    $r['menu_js'] = is_readable($theme.'/assets/js/main.js') ? file_get_contents($theme.'/assets/js/main.js') : '';
+    $r['icons_php'] = is_readable($theme.'/inc/icons.php') ? file_get_contents($theme.'/inc/icons.php') : '';
     $r['css_files'] = array();
     $r['css_menu_rules'] = array();
     $scan = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($theme, FilesystemIterator::SKIP_DOTS));
