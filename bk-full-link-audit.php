@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: BıçakKurdu - Geçici Tam İçerik Bağlantı Denetimi
- * Version: 1.0.1
+ * Version: 1.0.2
  * Description: One-time read-only audit of ALL published pages, CPTs, taxonomies and editorial hyperlinks. Stores a private draft report and makes no public changes.
  */
 defined('ABSPATH') || exit;
@@ -79,6 +79,20 @@ register_activation_hook(__FILE__, function() {
             if (is_wp_error($url))continue;
             $report['taxonomy'][]=array('taxonomy'=>$tax,'id'=>$t->term_id,'name'=>$t->name,'url'=>$url,'count'=>$t->count,'descriptionWords'=>bk_audit_visible_words((string)$t->description),'parent'=>$t->parent);
         }
+    }
+
+    $sitemap=wp_remote_get(home_url('/sitemap-1.xml'),array('timeout'=>7,'redirection'=>2,'limit_response_size'=>250000));
+    if (is_wp_error($sitemap)) $report['sitemap']=array('error'=>$sitemap->get_error_message());
+    else {
+        $xml=wp_remote_retrieve_body($sitemap);
+        preg_match_all('~<loc>([^<]+)</loc>~iu',$xml,$mm);
+        $urls=array_map('html_entity_decode',$mm[1]);
+        $report['sitemap']=array(
+            'http'=>wp_remote_retrieve_response_code($sitemap),
+            'total'=>count($urls),
+            'taxonomy_urls'=>array_values(array_filter($urls,static function($u){return str_contains($u,'/kategori/')||str_contains($u,'/celik-gruplari/')||str_contains($u,'/rehber-konulari/');})),
+            'known_editorial_missing'=>array_values(array_filter(array_map(static function($x){return $x['url'];},$report['items']),static function($u)use($urls){return !in_array($u,$urls,true);})),
+        );
     }
     $encoded=base64_encode(wp_json_encode($report, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
     $id=wp_insert_post(array('post_type'=>'page','post_status'=>'draft','post_title'=>'TEMP BK Full Internal External Link Audit 2026-11-24','post_name'=>'bk-full-link-audit-20261124','post_content'=>$encoded,'comment_status'=>'closed'),true);
