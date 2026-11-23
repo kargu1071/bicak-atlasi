@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BıçakKurdu - Üst Menü Makaleler
  * Description: Mevcut tema üst menüsünde Bileme bağlantısını Makaleler ve alt kategorileriyle değiştirir. URL yönlendirmelerine dokunmaz.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: BıçakKurdu
  */
 defined('ABSPATH') || exit;
@@ -22,7 +22,6 @@ function bk_makaleler_nav_items() {
 
 function bk_makaleler_nav_submenu() {
     $html = '<span class="bk-makaleler-dropdown" id="bk-makaleler-submenu">';
-    $html .= '<a class="bk-makaleler-all" href="' . esc_url(home_url('/makaleler/')) . '">Tüm Makaleler</a>';
     foreach (bk_makaleler_nav_items() as $item) {
         $class = $item[2] ? 'bk-makaleler-child' : '';
         $html .= '<a class="' . $class . '" href="' . esc_url(home_url($item[1])) . '">';
@@ -92,7 +91,6 @@ add_action('wp_head', function () {
 .bk-makaleler-dropdown>a{display:block!important;padding:9px 11px!important;line-height:1.35!important;text-decoration:none!important;font-size:13px!important;font-weight:700!important;white-space:normal!important;color:#f7f7f7!important;background:transparent!important;border:0!important;border-bottom:1px solid #343a3d!important}
 .bk-makaleler-dropdown>a:hover,.bk-makaleler-dropdown>a:focus{color:#ffbf16!important;background:#242a2d!important}
 .bk-makaleler-dropdown>a:last-child{border-bottom:0!important}
-.bk-makaleler-dropdown .bk-makaleler-all{color:#ffbf16!important;font-weight:900!important}
 .bk-makaleler-dropdown .bk-makaleler-child{padding-left:27px!important;color:#d5d8db!important}
 .bk-makaleler-toggle{border:0;cursor:pointer;background:transparent;color:#ffbf16;font-size:17px;padding:4px;line-height:1;display:none}
 @media (max-width:1000px){.bk-makaleler-menu{display:flex;flex-wrap:wrap;align-items:center}.bk-makaleler-toggle{display:inline-block}.bk-makaleler-dropdown{top:100%;left:0;right:auto;min-width:240px;width:min(320px,88vw);max-height:55vh}}
